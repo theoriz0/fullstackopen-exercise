@@ -1,0 +1,7 @@
+```sequence
+note over browser: User click Submit button
+note over browser: Browser add the note to the page
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa, Content-type JSON
+server-->browser: Status code 201
+```
+
