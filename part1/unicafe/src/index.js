@@ -9,6 +9,16 @@ const Counter = (props) => {
   return <p>{props.name} {props.count}</p>
 }
 
+const Average = ({good, neutral, bad}) => {
+  const avg = (good + neutral + bad)?(good - bad)/(good + neutral + bad):0
+  return <p>average {avg}</p>
+}
+
+const Postive = ({good, neutral, bad}) => {
+  const pos = (good + neutral + bad)?good/(good + neutral + bad):0
+  return <p>positive {pos*100}%</p>
+}
+
 const App = () => {
   // save clicks of each button to own state
   const [good, setGood] = useState(0)
@@ -40,6 +50,8 @@ const App = () => {
         <Counter name="good" count={good} />
         <Counter name="neutral" count={neutral} />
         <Counter name="bad" count={bad} />
+        <Average good={good} neutral={neutral} bad={bad} />
+        <Postive good={good} neutral={neutral} bad={bad} />
       </div>
     </div>
   )
