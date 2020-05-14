@@ -5,7 +5,7 @@ const Button = (props) => {
   return <button onClick={props.onClick}>{props.text}</button>
 }
 
-const Counter = (props) => {
+const Statistic = (props) => {
   return <p>{props.name} {props.count}</p>
 }
 
@@ -25,9 +25,9 @@ const Statistics = ({good, neutral, bad}) => {
       <>
         <h1>statistics</h1>
         <div>
-          <Counter name="good" count={good} />
-          <Counter name="neutral" count={neutral} />
-          <Counter name="bad" count={bad} />
+          <Statistic name="good" count={good} />
+          <Statistic name="neutral" count={neutral} />
+          <Statistic name="bad" count={bad} />
           <Average good={good} neutral={neutral} bad={bad} />
           <Postive good={good} neutral={neutral} bad={bad} />
         </div>
