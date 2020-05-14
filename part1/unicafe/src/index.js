@@ -6,17 +6,32 @@ const Button = (props) => {
 }
 
 const Statistic = (props) => {
-  return <p>{props.name} {props.count}</p>
+  return (
+    <tr>
+      <td>{props.name}</td>
+      <td>{props.count}</td>
+    </tr>
+  )
 }
 
 const Average = ({good, neutral, bad}) => {
   const avg = (good + neutral + bad)?(good - bad)/(good + neutral + bad):0
-  return <p>average {avg}</p>
+  return (
+    <tr>
+      <td>average</td>
+      <td>{avg}</td>
+    </tr>
+  )
 }
 
 const Postive = ({good, neutral, bad}) => {
   const pos = (good + neutral + bad)?good/(good + neutral + bad):0
-  return <p>positive {pos*100}%</p>
+  return (
+    <tr>
+      <td>pos</td>
+      <td>{pos * 100}%</td>
+    </tr>
+  )
 }
 
 const Statistics = ({good, neutral, bad}) => {
@@ -24,13 +39,15 @@ const Statistics = ({good, neutral, bad}) => {
     return (
       <>
         <h1>statistics</h1>
-        <div>
-          <Statistic name="good" count={good} />
-          <Statistic name="neutral" count={neutral} />
-          <Statistic name="bad" count={bad} />
-          <Average good={good} neutral={neutral} bad={bad} />
-          <Postive good={good} neutral={neutral} bad={bad} />
-        </div>
+        <table>
+          <tbody>
+            <Statistic name="good" count={good} />
+            <Statistic name="neutral" count={neutral} />
+            <Statistic name="bad" count={bad} />
+            <Average good={good} neutral={neutral} bad={bad} />
+            <Postive good={good} neutral={neutral} bad={bad} />
+          </tbody>
+        </table>
       </>
     )
   }
