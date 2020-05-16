@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 const App = (props) => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(props.votes)
+  const [mostVoted, setMostVoted] = useState(null)
   console.log("init points", votes)
 
   const setSelectedToRandom = () => {
@@ -11,18 +12,33 @@ const App = (props) => {
     setSelected(randomInt)
   }
 
+  const calculateMostVoted = (updatedVoteKey, votes) => {
+    if (mostVoted === null || votes[updatedVoteKey] > votes[mostVoted]) {
+      setMostVoted(updatedVoteKey)
+    }
+  }
+
   const voteSelected = () => {
     let updatedVotes = [...votes]
-    updatedVotes[selected] += 1
+    updatedVotes[selected] += votePerClick
+    calculateMostVoted(selected, updatedVotes)
     setVotes(updatedVotes)
   }
 
   return (
     <div>
-      <p>{props.anecdotes[selected]}</p>
-      <p>has {votes[selected]}</p>
-      <button onClick={voteSelected}>vote</button>
-      <button onClick={setSelectedToRandom}>next anecdote</button>
+      <div>
+        <h1>Anecdote of the day</h1>
+        <p>{props.anecdotes[selected]}</p>
+        <p>has {votes[selected]}</p>
+        <button onClick={voteSelected}>vote</button>
+        <button onClick={setSelectedToRandom}>next anecdote</button>
+      </div>
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <p>{props.anecdotes[mostVoted]}</p>
+        <p>has {votes[mostVoted]} votes</p>
+      </div>
     </div>
   )
 }
@@ -36,7 +52,9 @@ const anecdotes = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
-const votes = new Array(6).fill(0)
+const votes = new Array(anecdotes.length).fill(0)
+
+const votePerClick = 1
 
 ReactDOM.render(
   <App anecdotes={anecdotes} votes={votes}/>,
