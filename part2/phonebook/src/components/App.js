@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Numbers from "./Numbers";
+import Persons from "./Persons";
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 
@@ -59,7 +59,7 @@ const App = () => {
         onsubmit={addPerson}
       />
       <h2>Numbers</h2>
-      <Numbers persons={personsToShow} />
+      <Persons persons={personsToShow} />
     </div>
   );
 };
