@@ -1,11 +1,17 @@
 import React from 'react'
 
-const Person = ({person: {name, number}}) => <p>{name} {number}</p>
-
-const Persons = (props) => {
+const Person = ({person, handleDeleteClick}) => {
   return (
     <div>
-      {props.persons.map(person => <Person key={person.name} person={person} />)}
+      <p>{person.name} {person.number} <button person={person} onClick={handleDeleteClick}>delete</button></p>
+    </div>
+  )
+}
+
+const Persons = ({persons, handlePersonDelete}) => {
+  return (
+    <div>
+      {persons.map(person => <Person key={person.id} person={person} handleDeleteClick={event => handlePersonDelete(person)}/>)}
     </div>
   )
 }

@@ -51,6 +51,16 @@ const App = () => {
     }
   };
 
+  const deletePerson = (person) => {
+    const personToDelete = person.id
+    console.log('delete person ', personToDelete)
+    if (window.confirm(`delete ${person.name}?`)) {
+      personService.deletePerson(personToDelete).then(
+        setPersons(persons.filter(person => person.id !== personToDelete))
+      )
+    }
+  }
+
   const personsToShow = persons.filter(personFilter);
 
   return (
@@ -66,7 +76,7 @@ const App = () => {
         onsubmit={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} handlePersonDelete={deletePerson} />
     </div>
   );
 };
