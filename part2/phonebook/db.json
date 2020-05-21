@@ -21,24 +21,9 @@
       "id": 4
     },
     {
-      "name": "daniel",
-      "number": "zhang",
-      "id": 5
-    },
-    {
       "name": "adb",
       "number": "1123123",
       "id": 6
-    },
-    {
-      "name": "asdf1",
-      "number": "1",
-      "id": 7
-    },
-    {
-      "name": "asdf12",
-      "number": "11",
-      "id": 8
     }
   ]
 }

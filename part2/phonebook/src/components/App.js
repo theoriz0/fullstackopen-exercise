@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filterText, setFilterText] = useState("");
   const [notificationMessage, setNotificationMessage ] = useState(null);
+  const [notificationType, setNotificationType] = useState('success');
 
   useEffect(() => {
     personService.getAll()
@@ -50,6 +51,7 @@ const App = () => {
     } else {
       personService.addPerson(newPerson)
         .then(data => setPersons(persons.concat(data)));
+      setNotificationType('success');
       setNotificationMessage(`Added ${newName}`);
       setTimeout(hideNotification,2000);
       setNewName("");
@@ -62,9 +64,15 @@ const App = () => {
     const personToDelete = person.id
     console.log('delete person ', personToDelete)
     if (window.confirm(`delete ${person.name}?`)) {
-      personService.deletePerson(personToDelete).then(
-        setPersons(persons.filter(person => person.id !== personToDelete))
-      )
+      personService.deletePerson(personToDelete)
+        .then(
+          setPersons(persons.filter(person => person.id !== personToDelete))
+        )
+        .catch(error => {
+          setNotificationType('alert');
+          setNotificationMessage(`Information of ${person.name} has already been removed from server`);
+          setTimeout(hideNotification,2000);
+        })
     }
   }
 
@@ -73,7 +81,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification message={notificationMessage} type={notificationType} />
       <Filter value={filterText} onchange={handleFilterTextChange} />
       <h2>add a new</h2>
       <PersonForm
