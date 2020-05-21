@@ -3,12 +3,14 @@ import Persons from "./Persons";
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import personService from '../services/persons';
+import Notification from '../components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterText, setFilterText] = useState("");
+  const [notificationMessage, setNotificationMessage ] = useState(null);
 
   useEffect(() => {
     personService.getAll()
@@ -36,15 +38,20 @@ const App = () => {
     setFilterText(event.target.value);
   };
 
+  const hideNotification = () => {
+    setNotificationMessage(null);
+  }
+
   const addPerson = (event) => {
     event.preventDefault();
     const newPerson = { name: newName, number: newNumber }
     if (persons.find((i) => i.name === newName)) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      personService.addPerson(newPerson).then(
-        data => setPersons(persons.concat(data))
-      );
+      personService.addPerson(newPerson)
+        .then(data => setPersons(persons.concat(data)));
+      setNotificationMessage(`Added ${newName}`);
+      setTimeout(hideNotification,2000);
       setNewName("");
       setNewNumber("");
       setFilterText("");
@@ -66,6 +73,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter value={filterText} onchange={handleFilterTextChange} />
       <h2>add a new</h2>
       <PersonForm
