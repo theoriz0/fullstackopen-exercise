@@ -1,5 +1,7 @@
+require('dotenv').config()
 const express = require("express");
 const morgan = require("morgan");
+const Person = require('./model/person')
 
 const app = express();
 morgan.token('body', (req) => {
@@ -9,55 +11,47 @@ morgan.token('body', (req) => {
 app.use(express.json());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 app.use(express.static('build'))
-let persons = [
-  {
-    name: "Arto Helloa",
-    number: "040-123895",
-    id: 1,
-  },
-  {
-    name: "Ada Locelace",
-    number: "39-44-123045",
-    id: 2,
-  },
-  {
-    name: "Dan Abramov",
-    number: "12-41-1234551",
-    id: 3,
-  },
-  {
-    name: "Mary Popperhead",
-    number: "39-23-12471",
-    id: 4,
-  },
-];
 
 app.get("/api/persons", (req, res) => {
-  res.send(persons);
+  Person.find({}).then(result => {
+    res.send(result)
+  })
 });
 
 app.get("/info", (req, res) => {
-  res.send(
-    `<p>Phonebook has info for ${persons.length} people</p><p>${Date()}</p>`
-  );
+  Person.find({}).then(result => {
+    res.send(
+      `<p>Phonebook has info for ${result.length} people</p><p>${Date()}</p>`
+    )
+  })
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  console.log(id);
-  const person = persons.find((p) => p.id === id);
-
-  if (person) {
-    res.send(person);
-  } else {
-    res.status(404).end();
-  }
+  const id = req.params.id;
+  Person.findById(id).then(result => {
+    if (result) {
+      res.send(result)
+    } else {
+      res.status(404).end()
+    }
+  })
+  .catch(error => {
+    console.log(error)
+    res.status(400).send('malformmated id')
+  })
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter((p) => p.id !== id);
-  res.status(204).end();
+  Person.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(400).json({
+        error: error.message
+      })
+    })
 });
 
 app.post("/api/persons", (req, res) => {
@@ -68,23 +62,23 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  if (persons.find((p) => p.name === body.name)) {
+  if (Person.find({'name': body.name}).length) {
     return res.status(400).json({
       error: "name must be unique",
     });
+  } else {
+    const person = new Person({
+      name: body.name,
+      number: body.number,
+    })
+
+    person.save().then(savedPerson => {
+      res.json(savedPerson)
+    })
   }
-
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: Math.floor(Math.random() * 100000),
-  };
-
-  persons = persons.concat(person)
-  res.json(person)
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log("app start listening on", PORT);
