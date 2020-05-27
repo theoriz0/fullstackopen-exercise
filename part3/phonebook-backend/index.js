@@ -59,21 +59,28 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  if (Person.find({ name: body.name })) {
-    return res.status(400).json({
-      error: "name must be unique",
-    });
-  } else {
+  // if (Person.find({ name: body.name })) {
+  //   return res.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // } else {
     const person = new Person({
       name: body.name,
       number: body.number,
     });
 
-    person.save().then((savedPerson) => {
-      res.json(savedPerson);
-    });
+    person
+      .save()
+      .then((savedPerson) => {
+        res.json(savedPerson);
+      })
+      .catch((error) => {
+        console.log(error._message);
+        res.status(400).send({ error: error.message });
+      });
   }
-});
+// });
+)
 
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
