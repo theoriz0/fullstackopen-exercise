@@ -35,9 +35,26 @@ const mostBlogs = (blogs) => {
   return arthorThatWriteMost
 }
 
+const mostLikes = (blogs) => {
+  const counter = (countByArthur, blog) => {
+    (countByArthur[blog.author] === undefined) ? countByArthur[blog.author] = blog.likes : countByArthur[blog.author] += blog.likes
+    return countByArthur
+  }
+  const counts = blogs.reduce(counter, {})
+  console.log(counts)
+  let arthorThatLikedMost = {name: null, likes: 0}
+  for (let author in counts) {
+    if (counts[author] > arthorThatLikedMost.likes) {
+      arthorThatLikedMost = { name: author, likes: counts[author] }
+    }
+  }
+  return arthorThatLikedMost
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
