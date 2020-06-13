@@ -97,6 +97,18 @@ test('post without title and url will be responded with 400', async () => {
     .expect(400)
 })
 
+test('delete the first blog', async () => {
+  const initialResponse = await api.get('/api/blogs')
+  const blogToDeleteId = initialResponse.body[0].id
+  await api
+    .delete('/api/blogs/' + blogToDeleteId)
+    .expect(204)
+  
+  const responseAfterDeletion = await api.get('/api/blogs')
+  const blogAfterDeletionIds = responseAfterDeletion.body.map(blog => blog.id)
+  expect(blogAfterDeletionIds).not.toContain(blogToDeleteId)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
