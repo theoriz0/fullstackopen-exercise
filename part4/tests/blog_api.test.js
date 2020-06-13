@@ -85,6 +85,18 @@ test('post to /api/blogs without likes will have default 0 likes', async () => {
   expect(likes).toContain(0)
 })
 
+test('post without title and url will be responded with 400', async () => {
+  const newBlog = {
+    author: "Daniel3",
+    likes: 1
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
