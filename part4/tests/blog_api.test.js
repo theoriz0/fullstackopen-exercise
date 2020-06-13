@@ -106,7 +106,29 @@ test('delete the first blog', async () => {
   
   const responseAfterDeletion = await api.get('/api/blogs')
   const blogAfterDeletionIds = responseAfterDeletion.body.map(blog => blog.id)
+  expcet(blogAfterDeletionIds).toHaveLength(initialResponse.length - 1)
   expect(blogAfterDeletionIds).not.toContain(blogToDeleteId)
+})
+
+test('update the first blog', async () => {
+  const initialResponse = await api.get('/api/blogs')
+  const blogToUpdateId = initialResponse.body[0].id
+  const updatedBlog = {
+    title: "Updated title",
+    url: "http://localhost:2000",
+    likes: "1",
+    author: "Daniel9"
+  }
+  await api
+    .put('/api/blogs/' + blogToUpdateId)
+    .send(updatedBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAfterUpdate = await api.get('/api/blogs')
+  const titles = blogsAfterUpdate.body.map(blog => blog.title)
+  expect(blogsAfterUpdate.body).toHaveLength(initialBlogs.length)
+  expect(titles).toContain(updatedBlog.title)
 })
 
 afterAll(() => {
