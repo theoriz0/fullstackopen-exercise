@@ -22,13 +22,6 @@ const initialBlogs = [
   }
 ]
 
-const newBlog = {
-  title: 'Test title3',
-  author: 'Daniel3',
-  url: 'http://localhost:3003',
-  likes: 3,
-}
-
 beforeEach(async () => {
   await Blog.deleteMany({})
   const blogObjects = initialBlogs.map(blog => new Blog(blog))
@@ -47,6 +40,13 @@ test('the unique identifier is named id', async () => {
 })
 
 test('post to /api/blogs creates new blog', async () => {
+  const newBlog = {
+    title: 'Test title3',
+    author: 'Daniel3',
+    url: 'http://localhost:3003',
+    likes: 3,
+  }
+
   await api
     .post('/api/blogs')
     .send(newBlog)
@@ -63,6 +63,26 @@ test('post to /api/blogs creates new blog', async () => {
   expect(likes).toContain(newBlog.likes)
   expect(urls).toContain(newBlog.url)
   expect(titles).toContain(newBlog.title)
+})
+
+test('post to /api/blogs without likes will have default 0 likes', async () => {
+  const newBlog = {
+    title: "Title3",
+    author: "Daniel3",
+    url: "http://localhost:3003"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  
+  const likes = response.body.map(blog => blog.likes)
+
+  expect(likes).toContain(0)
 })
 
 afterAll(() => {
